@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 from scipy.ndimage import gaussian_filter
 
 
+dirName = 'project-data/'
 
-dirName = 'D:/PhD at Vanderbilt/pythonWorkplace/data-processing/'
 
 def getFiles(dirName):
     if not dirName.endswith('/'):
@@ -21,7 +21,8 @@ def getFiles(dirName):
         print(svgFile)
         txtFileName = extractData(svgFile)
         plotHeatmap(txtFileName, cell_sides=[2, 2], min_density=0.000001, max_density=0.0012)
-        
+
+
 def extractData(svgFileName):
     txtFileName = svgFileName.replace('.svg', '.txt')
 
@@ -62,8 +63,9 @@ def extractData(svgFileName):
 
     return txtFileName
 
+
 def plotHeatmap(txtFileName, cell_sides, min_density, max_density):
-    # sns.set()
+
     fig, axs = plt.subplots(ncols = 1, nrows = 1)
 
     data = np.loadtxt(txtFileName)
@@ -75,30 +77,15 @@ def plotHeatmap(txtFileName, cell_sides, min_density, max_density):
                                          bins = n_xy,
                                          range = range_xy,
                                          normed = True)
-    # H_tmp = H.copy()
-    # H_tmp[np.where(H_tmp == 0)] = np.nan
-    # print(txtFileName + " sec min is " + str(np.nanmin(H_tmp)) + " max is " + str(np.nanmax(H_tmp)))
 
     H = H + min_density
-   # ax0 = sns.heatmap(np.log(H), xticklabels = False, yticklabels = False, vmin = np.log(min_density), vmax = np.log(max_density),
-    #            cbar = True, cmap = plt.get_cmap("hot"), ax = axs[0])
     H = gaussian_filter(H, sigma = 1)
     ax1 = sns.heatmap(np.log(H), xticklabels = False, yticklabels = False, vmin = np.log(min_density), vmax = np.log(max_density),
                 cbar = True, cmap = plt.get_cmap("hot"), ax = axs)
-    # ax1= sns.heatmap(H, xticklabels=False, yticklabels=False, vmin=0, vmax=0.0006,
-    #             cbar=True, cmap=plt.get_cmap("jet"))
 
     plt.savefig(txtFileName.replace(".txt", ".eps"))
 
-    # plt.show()
-
     return H.max()
 
-
-
-
-
 getFiles(dirName)
-# plotHeatmap("18-19LHBDA.txt", cell_sides=[2, 2], min_density=0.000001, max_density=0.0012)
-# max_dentsity = plotHeatmap('18-19LHCTB.txt', cell_sides = [2, 2], min_density = 0.000001, max_density = 0.0006)
-# print(max_dentsity)
+
